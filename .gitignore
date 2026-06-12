@@ -1,0 +1,8 @@
+temp/
+nppBackup/
+.DS_Store
+Thumbs.db
+.env
+node_modules/
+.agents/
+.claude/
