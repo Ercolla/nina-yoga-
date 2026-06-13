@@ -129,36 +129,42 @@ document.addEventListener('DOMContentLoaded', () => {
     window.dispatchEvent(new CustomEvent('easter-egg-deactivate'));
   }
 
-  /* Shake detection via accelerometer */
-  var shakeCount = 0;
-  var lastShake = 0;
-  var lastX = null, lastY = null, lastZ = null;
+  /* Long press on hero (3 seconds) to activate */
+  var heroSection = document.getElementById('hero');
+  var pressTimer = null;
 
-  window.addEventListener('devicemotion', function(e) {
-    var acc = e.accelerationIncludingGravity;
-    if (!acc || easterActive) return;
+  if (heroSection) {
+    heroSection.addEventListener('touchstart', function(e) {
+      if (easterActive) return;
+      pressTimer = setTimeout(function() {
+        activateEasterEgg();
+      }, 3000);
+    }, { passive: true });
 
-    if (lastX !== null) {
-      var delta = Math.abs(acc.x - lastX) + Math.abs(acc.y - lastY) + Math.abs(acc.z - lastZ);
-      if (delta > 25) {
-        var now = Date.now();
-        if (now - lastShake > 300) {
-          shakeCount++;
-          lastShake = now;
-          if (shakeCount >= 3) {
-            shakeCount = 0;
-            activateEasterEgg();
-          }
-        }
-      }
-    }
-    lastX = acc.x; lastY = acc.y; lastZ = acc.z;
+    heroSection.addEventListener('touchend', function() {
+      if (pressTimer) { clearTimeout(pressTimer); pressTimer = null; }
+    });
 
-    /* Reset shake count if too slow */
-    setTimeout(function() {
-      if (Date.now() - lastShake > 2000) shakeCount = 0;
-    }, 2100);
-  });
+    heroSection.addEventListener('touchmove', function() {
+      if (pressTimer) { clearTimeout(pressTimer); pressTimer = null; }
+    });
+
+    /* Desktop: mouse long press */
+    heroSection.addEventListener('mousedown', function() {
+      if (easterActive) return;
+      pressTimer = setTimeout(function() {
+        activateEasterEgg();
+      }, 3000);
+    });
+
+    heroSection.addEventListener('mouseup', function() {
+      if (pressTimer) { clearTimeout(pressTimer); pressTimer = null; }
+    });
+
+    heroSection.addEventListener('mouseleave', function() {
+      if (pressTimer) { clearTimeout(pressTimer); pressTimer = null; }
+    });
+  }
 
   /* Close Easter egg on tap */
   if (easterEgg) {
