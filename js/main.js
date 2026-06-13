@@ -96,11 +96,10 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  /* --- Easter Egg: cover light sensor to activate --- */
+  /* --- Easter Egg: shake phone to activate --- */
   var easterEgg = document.getElementById('easter-egg');
   var easterQuote = easterEgg ? easterEgg.querySelector('.easter-egg-quote') : null;
   var easterActive = false;
-  var darkStart = 0;
 
   var easterQuotes = [
     '"The body is your temple. Keep it pure and clean for the soul to reside in." — B.K.S. Iyengar',
@@ -130,29 +129,35 @@ document.addEventListener('DOMContentLoaded', () => {
     window.dispatchEvent(new CustomEvent('easter-egg-deactivate'));
   }
 
-  function handleLightLevel(lux) {
-    if (lux < 10 && !easterActive) {
-      if (!darkStart) darkStart = Date.now();
-      if (Date.now() - darkStart > 1500) activateEasterEgg();
-    } else if (lux >= 10) {
-      darkStart = 0;
+  /* Shake detection via accelerometer */
+  var shakeCount = 0;
+  var lastShake = 0;
+  var lastX = null, lastY = null, lastZ = null;
+
+  window.addEventListener('devicemotion', function(e) {
+    var acc = e.accelerationIncludingGravity;
+    if (!acc || easterActive) return;
+
+    if (lastX !== null) {
+      var delta = Math.abs(acc.x - lastX) + Math.abs(acc.y - lastY) + Math.abs(acc.z - lastZ);
+      if (delta > 25) {
+        var now = Date.now();
+        if (now - lastShake > 300) {
+          shakeCount++;
+          lastShake = now;
+          if (shakeCount >= 3) {
+            shakeCount = 0;
+            activateEasterEgg();
+          }
+        }
+      }
     }
-  }
+    lastX = acc.x; lastY = acc.y; lastZ = acc.z;
 
-  /* Try AmbientLightSensor API (Chrome Android) */
-  if ('AmbientLightSensor' in window) {
-    try {
-      var lightSensor = new AmbientLightSensor();
-      lightSensor.addEventListener('reading', function() {
-        handleLightLevel(lightSensor.illuminance);
-      });
-      lightSensor.start();
-    } catch(e) {}
-  }
-
-  /* Fallback: devicelight event (older browsers) */
-  window.addEventListener('devicelight', function(e) {
-    handleLightLevel(e.value);
+    /* Reset shake count if too slow */
+    setTimeout(function() {
+      if (Date.now() - lastShake > 2000) shakeCount = 0;
+    }, 2100);
   });
 
   /* Close Easter egg on tap */
