@@ -81,6 +81,44 @@ document.addEventListener('DOMContentLoaded', () => {
     }, { passive: true });
   }
 
+  /* --- Tubes Interactive Background --- */
+  var tubesCanvas = document.getElementById('tubes-canvas');
+  if (tubesCanvas) {
+    (async function() {
+      try {
+        var module = await import('https://cdn.jsdelivr.net/npm/threejs-components@0.0.19/build/cursors/tubes1.min.js');
+        var TubesCursor = module.default || module.Tubes1Cursor || module;
+        if (typeof TubesCursor === 'function') {
+          TubesCursor(tubesCanvas, {
+            tubes: {
+              colors: ['#7B3FA0', '#9B5FBB', '#D946A8'],
+              lights: {
+                intensity: 150,
+                colors: ['#7B3FA0', '#D946A8', '#E06BB8', '#9B5FBB']
+              }
+            }
+          });
+        }
+      } catch(e) {
+        console.warn('Tubes background not available:', e);
+      }
+    })();
+  }
+
+  /* --- Back to Top button --- */
+  var backToTop = document.getElementById('back-to-top');
+  if (backToTop) {
+    window.addEventListener('scroll', function() {
+      var scrolled = window.scrollY;
+      var docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      backToTop.classList.toggle('visible', scrolled > docHeight * 0.5);
+    }, { passive: true });
+
+    backToTop.addEventListener('click', function() {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  }
+
   /* --- Cookie Consent Banner --- */
   const banner = document.getElementById('cookie-banner');
   const acceptBtn = document.getElementById('cookie-accept');
