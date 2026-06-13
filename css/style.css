@@ -30,7 +30,7 @@ html {
 body {
   font-family: var(--font-body);
   color: var(--charcoal);
-  background: var(--cream);
+  background: #000;
   line-height: 1.7;
 }
 
@@ -199,6 +199,7 @@ p { margin-bottom: 16px; text-wrap: pretty; }
     url('../img/Depositphotos_4466035_L.jpg') right center/cover no-repeat;
   background-color: var(--sage);
   will-change: transform;
+  opacity: 0.85;
 }
 
 .hero-content {
@@ -765,7 +766,7 @@ p { margin-bottom: 16px; text-wrap: pretty; }
 /* --- Footer --- */
 .footer {
   padding: 48px 24px;
-  background: var(--charcoal);
+  background: rgba(45, 45, 45, 0.85);
   color: rgba(255,255,255,0.6);
   text-align: center;
   font-size: 0.9rem;
@@ -972,11 +973,14 @@ p { margin-bottom: 16px; text-wrap: pretty; }
   inset: 0;
   width: 100%;
   height: 100%;
-  z-index: 9990;
+  z-index: 0;
   display: block;
   touch-action: none;
-  opacity: 0.13;
-  mix-blend-mode: screen;
+}
+
+#site-content {
+  position: relative;
+  z-index: 1;
 }
 
 /* --- Back to Top --- */
