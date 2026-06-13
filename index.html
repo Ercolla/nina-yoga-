@@ -474,12 +474,12 @@
         const TubesCursor = mod.default;
         TubesCursor(canvas, {
           tubes: {
-            count: 30,
-            radius: 3,
-            length: 12,
+            count: 40,
+            radius: 4,
+            length: 16,
             colors: ['#7B3FA0', '#9B5FBB', '#D946A8'],
             lights: {
-              intensity: 350,
+              intensity: 500,
               colors: ['#7B3FA0', '#D946A8', '#E06BB8', '#9B5FBB']
             }
           }
@@ -517,9 +517,18 @@
 
         /* Gyroscope for mobile — tilt phone to move tubes */
         var isMobile = /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+        var lastBeta = null, lastGamma = null;
 
         function onDeviceOrientation(e) {
           if (e.beta == null || e.gamma == null) return;
+          /* Only count as movement if tilt changed significantly */
+          var moved = lastBeta === null ||
+            Math.abs(e.beta - lastBeta) > 1.5 ||
+            Math.abs(e.gamma - lastGamma) > 1.5;
+          lastBeta = e.beta;
+          lastGamma = e.gamma;
+          if (!moved) return;
+
           lastMove = Date.now();
           var neutralBeta = 45;
           var clampedBeta = Math.max(-40, Math.min(40, e.beta - neutralBeta));
@@ -552,9 +561,9 @@
         /* Auto-animate: always runs, only moves when idle > 1s */
         function autoMove() {
           if (Date.now() - lastMove > 1000) {
-            autoAngle += 0.008;
-            var cx = window.innerWidth / 2 + Math.sin(autoAngle) * window.innerWidth * 0.3;
-            var cy = window.innerHeight / 2 + Math.cos(autoAngle * 0.7) * window.innerHeight * 0.25;
+            autoAngle += 0.006;
+            var cx = window.innerWidth / 2 + Math.sin(autoAngle) * window.innerWidth * 0.4;
+            var cy = window.innerHeight / 2 + Math.cos(autoAngle * 0.6) * window.innerHeight * 0.35;
             canvas.dispatchEvent(new PointerEvent('pointermove', {
               clientX: cx, clientY: cy, bubbles: true
             }));
