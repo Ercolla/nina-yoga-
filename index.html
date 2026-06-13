@@ -208,7 +208,7 @@
 <body>
 
   <!-- ===== TUBES INTERACTIVE BACKGROUND ===== -->
-  <canvas id="tubes-canvas"></canvas>
+  <div id="tubes-wrap"><canvas id="tubes-canvas"></canvas></div>
 
   <!-- ===== NAVIGATION ===== -->
   <nav class="nav" role="navigation" aria-label="Main navigation">
@@ -470,8 +470,6 @@
     const canvas = document.getElementById('tubes-canvas');
     if (canvas) {
       try {
-        /* Temporarily enable pointer-events for library init */
-        canvas.style.pointerEvents = 'auto';
         const mod = await import('https://cdn.jsdelivr.net/npm/threejs-components@0.0.19/build/cursors/tubes1.min.js');
         const TubesCursor = mod.default;
         TubesCursor(canvas, {
@@ -483,10 +481,18 @@
             }
           }
         });
-        /* Disable pointer-events so site is interactive */
-        canvas.style.pointerEvents = 'none';
 
-        /* Forward mouse movement to canvas for tube tracking */
+        /* Force canvas to fill viewport */
+        function resizeCanvas() {
+          canvas.width = window.innerWidth;
+          canvas.height = window.innerHeight;
+          canvas.style.width = '100%';
+          canvas.style.height = '100%';
+        }
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+
+        /* Forward mouse to canvas */
         document.addEventListener('mousemove', function(e) {
           canvas.dispatchEvent(new PointerEvent('pointermove', {
             clientX: e.clientX, clientY: e.clientY, bubbles: true
@@ -496,9 +502,9 @@
           }));
         }, { passive: true });
 
-        console.log('Tubes background loaded successfully');
+        console.log('Tubes loaded — canvas size:', canvas.width, 'x', canvas.height);
       } catch(e) {
-        console.warn('Tubes background not available:', e);
+        console.warn('Tubes not available:', e);
       }
     }
   </script>

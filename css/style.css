@@ -967,17 +967,23 @@ p { margin-bottom: 16px; text-wrap: pretty; }
 }
 
 /* --- Tubes Interactive Background --- */
-#tubes-canvas {
+#tubes-wrap {
   position: fixed;
   top: 0;
   left: 0;
   width: 100vw;
   height: 100vh;
   z-index: 9990;
-  display: block;
   pointer-events: none;
-  opacity: 0.25;
-  mix-blend-mode: multiply;
+  overflow: hidden;
+  opacity: 0.35;
+}
+
+#tubes-canvas {
+  display: block !important;
+  width: 100% !important;
+  height: 100% !important;
+  pointer-events: none;
 }
 
 
