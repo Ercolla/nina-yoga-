@@ -60,6 +60,18 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
+  /* --- About logo parallax --- */
+  const aboutLogo = document.querySelector('.about-bg-logo');
+  if (aboutLogo) {
+    window.addEventListener('scroll', () => {
+      const section = aboutLogo.parentElement;
+      const rect = section.getBoundingClientRect();
+      const speed = 0.15;
+      const offset = rect.top * speed;
+      aboutLogo.style.transform = 'translate(-50%, -50%) translateY(' + offset + 'px) rotate(' + (offset * 0.05) + 'deg)';
+    }, { passive: true });
+  }
+
   /* --- Cookie Consent Banner --- */
   const banner = document.getElementById('cookie-banner');
   const acceptBtn = document.getElementById('cookie-accept');
