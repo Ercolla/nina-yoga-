@@ -10,6 +10,15 @@ document.addEventListener('DOMContentLoaded', () => {
   window.addEventListener('scroll', handleScroll, { passive: true });
   handleScroll();
 
+  /* --- Hero parallax --- */
+  const heroBg = document.querySelector('.hero-bg');
+  if (heroBg) {
+    window.addEventListener('scroll', () => {
+      const scrollY = window.scrollY;
+      heroBg.style.transform = 'translateY(' + (scrollY * 0.4) + 'px)';
+    }, { passive: true });
+  }
+
   /* --- Mobile menu toggle --- */
   const toggle = document.querySelector('.nav-toggle');
   const links = document.querySelector('.nav-links');
