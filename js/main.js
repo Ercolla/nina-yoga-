@@ -130,6 +130,25 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
 
+  /* Triple tap on "Open to everyone" to activate */
+  var footerMsg = document.querySelector('.footer-message');
+  var eeTapCount = 0;
+  var eeTapTimer = null;
+
+  if (footerMsg) {
+    footerMsg.style.cursor = 'pointer';
+    footerMsg.addEventListener('click', function(e) {
+      e.stopPropagation();
+      eeTapCount++;
+      if (eeTapTimer) clearTimeout(eeTapTimer);
+      eeTapTimer = setTimeout(function() { eeTapCount = 0; }, 800);
+      if (eeTapCount >= 3) {
+        eeTapCount = 0;
+        activateEasterEgg();
+      }
+    });
+  }
+
   /* Close Easter egg on tap */
   if (easterEgg) {
     easterEgg.addEventListener('click', deactivateEasterEgg);
