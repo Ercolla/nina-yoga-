@@ -96,12 +96,11 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  /* --- Easter Egg: triple tap on hero logo --- */
-  var heroLogo = document.querySelector('.hero-logo');
+  /* --- Easter Egg: cover light sensor to activate --- */
   var easterEgg = document.getElementById('easter-egg');
   var easterQuote = easterEgg ? easterEgg.querySelector('.easter-egg-quote') : null;
-  var tapCount = 0;
-  var tapTimer = null;
+  var easterActive = false;
+  var darkStart = 0;
 
   var easterQuotes = [
     '"The body is your temple. Keep it pure and clean for the soul to reside in." — B.K.S. Iyengar',
@@ -116,38 +115,50 @@ document.addEventListener('DOMContentLoaded', () => {
     '"You should sit in meditation for twenty minutes every day — unless you\'re too busy. Then you should sit for an hour." — Zen Proverb'
   ];
 
-  if (heroLogo && easterEgg) {
-    heroLogo.style.cursor = 'pointer';
+  function activateEasterEgg() {
+    if (easterActive || !easterEgg) return;
+    easterActive = true;
+    easterQuote.textContent = easterQuotes[Math.floor(Math.random() * easterQuotes.length)];
+    easterEgg.classList.add('active');
+    window.dispatchEvent(new CustomEvent('easter-egg-activate'));
+  }
 
-    function handleTap(e) {
-      e.preventDefault();
-      e.stopPropagation();
-      tapCount++;
-      if (tapTimer) clearTimeout(tapTimer);
-      tapTimer = setTimeout(function() { tapCount = 0; }, 800);
+  function deactivateEasterEgg() {
+    if (!easterActive || !easterEgg) return;
+    easterActive = false;
+    easterEgg.classList.remove('active');
+    window.dispatchEvent(new CustomEvent('easter-egg-deactivate'));
+  }
 
-      if (tapCount >= 3) {
-        tapCount = 0;
-        easterQuote.textContent = easterQuotes[Math.floor(Math.random() * easterQuotes.length)];
-        easterEgg.classList.add('active');
-        window.dispatchEvent(new CustomEvent('easter-egg-activate'));
-      }
+  function handleLightLevel(lux) {
+    if (lux < 10 && !easterActive) {
+      if (!darkStart) darkStart = Date.now();
+      if (Date.now() - darkStart > 1500) activateEasterEgg();
+    } else if (lux >= 10) {
+      darkStart = 0;
     }
+  }
 
-    heroLogo.addEventListener('click', handleTap);
-    heroLogo.addEventListener('touchend', function(e) {
-      e.preventDefault();
-      handleTap(e);
-    });
+  /* Try AmbientLightSensor API (Chrome Android) */
+  if ('AmbientLightSensor' in window) {
+    try {
+      var lightSensor = new AmbientLightSensor();
+      lightSensor.addEventListener('reading', function() {
+        handleLightLevel(lightSensor.illuminance);
+      });
+      lightSensor.start();
+    } catch(e) {}
+  }
 
-    easterEgg.addEventListener('click', function() {
-      easterEgg.classList.remove('active');
-      window.dispatchEvent(new CustomEvent('easter-egg-deactivate'));
-    });
-    easterEgg.addEventListener('touchend', function() {
-      easterEgg.classList.remove('active');
-      window.dispatchEvent(new CustomEvent('easter-egg-deactivate'));
-    });
+  /* Fallback: devicelight event (older browsers) */
+  window.addEventListener('devicelight', function(e) {
+    handleLightLevel(e.value);
+  });
+
+  /* Close Easter egg on tap */
+  if (easterEgg) {
+    easterEgg.addEventListener('click', deactivateEasterEgg);
+    easterEgg.addEventListener('touchend', deactivateEasterEgg);
   }
 
   /* --- About logo parallax --- */
