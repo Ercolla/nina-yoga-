@@ -211,9 +211,6 @@
   <canvas id="tubes-canvas"></canvas>
   <div id="tubes-overlay"></div>
 
-  <!-- ===== SITE CONTENT ===== -->
-  <div id="site-content">
-
   <!-- ===== NAVIGATION ===== -->
   <nav class="nav" role="navigation" aria-label="Main navigation">
     <a href="#hero" class="nav-logo">
@@ -450,8 +447,6 @@
     <p>&copy; 2026 Nina — Yoga &amp; Sound Healing. All rights reserved.</p>
   </footer>
 
-  </div><!-- /site-content -->
-
   <!-- ===== COOKIE CONSENT ===== -->
   <div id="cookie-banner" class="cookie-banner" role="dialog" aria-label="Cookie consent">
     <div class="cookie-banner-inner">
@@ -476,6 +471,8 @@
     const canvas = document.getElementById('tubes-canvas');
     if (canvas) {
       try {
+        /* Temporarily enable pointer-events for library init */
+        canvas.style.pointerEvents = 'auto';
         const mod = await import('https://cdn.jsdelivr.net/npm/threejs-components@0.0.19/build/cursors/tubes1.min.js');
         const TubesCursor = mod.default;
         TubesCursor(canvas, {
@@ -487,11 +484,19 @@
             }
           }
         });
+        /* Disable pointer-events so site is interactive */
+        canvas.style.pointerEvents = 'none';
+
+        /* Forward mouse movement to canvas for tube tracking */
         document.addEventListener('mousemove', function(e) {
           canvas.dispatchEvent(new PointerEvent('pointermove', {
             clientX: e.clientX, clientY: e.clientY, bubbles: true
           }));
+          canvas.dispatchEvent(new MouseEvent('mousemove', {
+            clientX: e.clientX, clientY: e.clientY, bubbles: true
+          }));
         }, { passive: true });
+
         console.log('Tubes background loaded successfully');
       } catch(e) {
         console.warn('Tubes background not available:', e);
