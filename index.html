@@ -493,14 +493,31 @@
         window.addEventListener('resize', resizeCanvas);
 
         /* Forward mouse to canvas */
+        let lastMove = Date.now();
+        let autoAnim = null;
+        let autoAngle = 0;
+
         document.addEventListener('mousemove', function(e) {
+          lastMove = Date.now();
+          if (autoAnim) { cancelAnimationFrame(autoAnim); autoAnim = null; }
           canvas.dispatchEvent(new PointerEvent('pointermove', {
             clientX: e.clientX, clientY: e.clientY, bubbles: true
           }));
-          canvas.dispatchEvent(new MouseEvent('mousemove', {
-            clientX: e.clientX, clientY: e.clientY, bubbles: true
-          }));
         }, { passive: true });
+
+        /* Auto-animate when idle for 1 second */
+        function autoMove() {
+          if (Date.now() - lastMove > 1000) {
+            autoAngle += 0.008;
+            var cx = window.innerWidth / 2 + Math.sin(autoAngle) * window.innerWidth * 0.3;
+            var cy = window.innerHeight / 2 + Math.cos(autoAngle * 0.7) * window.innerHeight * 0.25;
+            canvas.dispatchEvent(new PointerEvent('pointermove', {
+              clientX: cx, clientY: cy, bubbles: true
+            }));
+          }
+          autoAnim = requestAnimationFrame(autoMove);
+        }
+        autoAnim = requestAnimationFrame(autoMove);
 
         console.log('Tubes loaded — canvas size:', canvas.width, 'x', canvas.height);
       } catch(e) {
