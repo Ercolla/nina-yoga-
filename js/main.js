@@ -129,55 +129,6 @@ document.addEventListener('DOMContentLoaded', () => {
     window.dispatchEvent(new CustomEvent('easter-egg-deactivate'));
   }
 
-  /* Blow into microphone to activate */
-  var micStarted = false;
-
-  function startMicDetection() {
-    if (micStarted) return;
-    micStarted = true;
-
-    navigator.mediaDevices.getUserMedia({ audio: true }).then(function(stream) {
-      var audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-      var source = audioCtx.createMediaStreamSource(stream);
-      var analyser = audioCtx.createAnalyser();
-      analyser.fftSize = 256;
-      source.connect(analyser);
-
-      var data = new Uint8Array(analyser.frequencyBinCount);
-      var blowStart = 0;
-
-      function checkBlow() {
-        if (easterActive) { requestAnimationFrame(checkBlow); return; }
-        analyser.getByteFrequencyData(data);
-
-        /* Average volume of low frequencies (typical of blowing) */
-        var sum = 0;
-        for (var i = 0; i < 20; i++) sum += data[i];
-        var avg = sum / 20;
-
-        if (avg > 120) {
-          if (!blowStart) blowStart = Date.now();
-          if (Date.now() - blowStart > 1200) {
-            blowStart = 0;
-            activateEasterEgg();
-          }
-        } else {
-          blowStart = 0;
-        }
-        requestAnimationFrame(checkBlow);
-      }
-      requestAnimationFrame(checkBlow);
-    }).catch(function() {});
-  }
-
-  /* Start mic only on desktop (no mobile) */
-  var isMobileDevice = /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-  if (!isMobileDevice) {
-    document.addEventListener('click', function initMic() {
-      startMicDetection();
-      document.removeEventListener('click', initMic);
-    }, { once: true });
-  }
 
   /* Close Easter egg on tap */
   if (easterEgg) {
