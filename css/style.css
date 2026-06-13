@@ -727,6 +727,21 @@ p { margin-bottom: 16px; text-wrap: pretty; }
     0 12px 30px rgba(123, 63, 160, 0.08);
 }
 
+.schedule-cta {
+  margin-top: 50px;
+  text-align: center;
+}
+
+.schedule-message {
+  font-family: var(--font-heading);
+  font-style: italic;
+  font-size: clamp(1.2rem, 3vw, 1.6rem);
+  color: var(--charcoal-light);
+  max-width: 500px;
+  margin: 0 auto 32px;
+  line-height: 1.5;
+}
+
 .schedule-day {
   font-family: var(--font-heading);
   font-size: 1.7rem;
