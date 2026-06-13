@@ -170,15 +170,14 @@ document.addEventListener('DOMContentLoaded', () => {
     }).catch(function() {});
   }
 
-  /* Start mic on first user interaction */
-  document.addEventListener('touchstart', function initMic() {
-    startMicDetection();
-    document.removeEventListener('touchstart', initMic);
-  }, { once: true });
-  document.addEventListener('click', function initMic() {
-    startMicDetection();
-    document.removeEventListener('click', initMic);
-  }, { once: true });
+  /* Start mic only on desktop (no mobile) */
+  var isMobileDevice = /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+  if (!isMobileDevice) {
+    document.addEventListener('click', function initMic() {
+      startMicDetection();
+      document.removeEventListener('click', initMic);
+    }, { once: true });
+  }
 
   /* Close Easter egg on tap */
   if (easterEgg) {
