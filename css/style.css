@@ -405,10 +405,16 @@ p { margin-bottom: 16px; text-wrap: pretty; }
 }
 
 .services-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
   gap: 36px;
   margin-top: 50px;
+}
+
+.service-card {
+  flex: 0 1 calc(33.333% - 24px);
+  min-width: 280px;
 }
 
 .service-card {
@@ -1076,9 +1082,8 @@ p { margin-bottom: 16px; text-wrap: pretty; }
   .about-image { order: -1; }
   .about-image img { aspect-ratio: 4/3; }
 
-  .services-grid {
-    grid-template-columns: 1fr;
-    gap: 24px;
+  .service-card {
+    flex: 0 1 100%;
   }
 
   .service-card-image { height: 200px; }
