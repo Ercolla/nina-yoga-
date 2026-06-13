@@ -5,7 +5,29 @@ if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('/sw.js').catch(function() {});
 }
 
+/* --- PWA Install prompt --- */
+var deferredPrompt = null;
+window.addEventListener('beforeinstallprompt', function(e) {
+  e.preventDefault();
+  deferredPrompt = e;
+  var btn = document.getElementById('install-btn');
+  if (btn) btn.style.display = '';
+});
+
 document.addEventListener('DOMContentLoaded', () => {
+
+  /* --- Install button --- */
+  var installBtn = document.getElementById('install-btn');
+  if (installBtn) {
+    installBtn.addEventListener('click', function() {
+      if (!deferredPrompt) return;
+      deferredPrompt.prompt();
+      deferredPrompt.userChoice.then(function() {
+        deferredPrompt = null;
+        installBtn.style.display = 'none';
+      });
+    });
+  }
 
   /* --- Navbar scroll effect --- */
   const nav = document.querySelector('.nav');

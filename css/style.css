@@ -919,7 +919,33 @@ p { margin-bottom: 16px; text-wrap: pretty; }
 
   .nav-links a {
     color: var(--white) !important;
-    font-size: 1.5rem;
+    font-size: 1.5rem !important;
+    text-shadow: none !important;
+  }
+
+  .nav.scrolled .nav-links a {
+    color: var(--white) !important;
+  }
+
+  .install-btn {
+    margin-top: 16px;
+    padding: 12px 32px;
+    background: rgba(255, 255, 255, 0.15);
+    border: 1.5px solid rgba(255, 255, 255, 0.5);
+    color: var(--white);
+    font-family: var(--font-heading);
+    font-style: italic;
+    font-size: 1.1rem;
+    border-radius: 50px;
+    cursor: pointer;
+    pointer-events: auto;
+    transition-property: background-color, transform;
+    transition-duration: 200ms;
+  }
+
+  .install-btn:active {
+    transform: scale(0.96);
+    background: rgba(255, 255, 255, 0.25);
   }
 
   .nav-toggle { display: flex; }
