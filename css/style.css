@@ -918,8 +918,8 @@ p { margin-bottom: 16px; text-wrap: pretty; }
   .nav-links.open { right: 0; }
 
   .nav-links a {
-    color: var(--charcoal) !important;
-    font-size: 1rem;
+    color: var(--white) !important;
+    font-size: 1.5rem;
   }
 
   .nav-toggle { display: flex; }
