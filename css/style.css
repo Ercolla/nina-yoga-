@@ -976,7 +976,7 @@ p { margin-bottom: 16px; text-wrap: pretty; }
   z-index: 9990;
   pointer-events: none;
   overflow: hidden;
-  opacity: 0.35;
+  mix-blend-mode: screen;
 }
 
 #tubes-canvas {
