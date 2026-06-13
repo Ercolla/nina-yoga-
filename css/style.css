@@ -777,6 +777,8 @@ p { margin-bottom: 16px; text-wrap: pretty; }
   font-size: 1.4rem;
   color: rgba(255,255,255,0.8);
   margin-bottom: 8px;
+  position: relative;
+  z-index: 9991;
 }
 
 .footer-donation {
