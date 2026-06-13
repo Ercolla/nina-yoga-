@@ -495,7 +495,7 @@
         resizeCanvas();
         window.addEventListener('resize', resizeCanvas);
 
-        /* Forward mouse to canvas */
+        /* Forward mouse/touch to canvas */
         let lastMove = 0;
         let autoAngle = Math.random() * Math.PI * 2;
 
@@ -505,6 +505,49 @@
             clientX: e.clientX, clientY: e.clientY, bubbles: true
           }));
         }, { passive: true });
+
+        /* Touch support */
+        document.addEventListener('touchmove', function(e) {
+          lastMove = Date.now();
+          var t = e.touches[0];
+          canvas.dispatchEvent(new PointerEvent('pointermove', {
+            clientX: t.clientX, clientY: t.clientY, bubbles: true
+          }));
+        }, { passive: true });
+
+        /* Gyroscope for mobile — tilt phone to move tubes */
+        var isMobile = /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+
+        function onDeviceOrientation(e) {
+          if (e.beta == null || e.gamma == null) return;
+          lastMove = Date.now();
+          var neutralBeta = 45;
+          var clampedBeta = Math.max(-40, Math.min(40, e.beta - neutralBeta));
+          var clampedGamma = Math.max(-45, Math.min(45, e.gamma));
+          var x = (clampedGamma / 45) * (window.innerWidth / 2) + (window.innerWidth / 2);
+          var y = (clampedBeta / 40) * (window.innerHeight / 2) + (window.innerHeight / 2);
+          canvas.dispatchEvent(new PointerEvent('pointermove', {
+            clientX: x, clientY: y, bubbles: true
+          }));
+        }
+
+        if (isMobile) {
+          if (typeof DeviceOrientationEvent !== 'undefined' &&
+              typeof DeviceOrientationEvent.requestPermission === 'function') {
+            /* iOS: request permission on first touch */
+            document.addEventListener('touchstart', function iosGyro() {
+              DeviceOrientationEvent.requestPermission().then(function(state) {
+                if (state === 'granted') {
+                  window.addEventListener('deviceorientation', onDeviceOrientation);
+                }
+              }).catch(function(){});
+              document.removeEventListener('touchstart', iosGyro);
+            }, { once: true });
+          } else {
+            /* Android: activate directly */
+            window.addEventListener('deviceorientation', onDeviceOrientation);
+          }
+        }
 
         /* Auto-animate: always runs, only moves when idle > 1s */
         function autoMove() {
