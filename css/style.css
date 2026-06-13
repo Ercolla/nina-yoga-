@@ -1030,10 +1030,6 @@ p { margin-bottom: 16px; text-wrap: pretty; }
 }
 
 @media (max-width: 768px) {
-  #tubes-canvas {
-    opacity: 0.08;
-  }
-
   #back-to-top {
     bottom: 20px;
     right: 20px;
