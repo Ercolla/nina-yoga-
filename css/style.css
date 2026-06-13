@@ -871,6 +871,12 @@ p { margin-bottom: 16px; text-wrap: pretty; }
   font-size: 0.9rem;
 }
 
+.mobile-break { display: none; }
+
+@media (max-width: 768px) {
+  .mobile-break { display: block; }
+}
+
 .footer-message {
   font-family: var(--font-heading);
   font-style: italic;
