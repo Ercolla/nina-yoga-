@@ -67,7 +67,7 @@ p { margin-bottom: 16px; text-wrap: pretty; }
   top: 0;
   left: 0;
   width: 100%;
-  z-index: 1000;
+  z-index: 9995;
   padding: 20px 32px;
   display: flex;
   justify-content: space-between;
