@@ -96,6 +96,53 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
+  /* --- Easter Egg: triple tap on hero logo --- */
+  var heroLogo = document.querySelector('.hero-logo');
+  var easterEgg = document.getElementById('easter-egg');
+  var easterQuote = easterEgg ? easterEgg.querySelector('.easter-egg-quote') : null;
+  var tapCount = 0;
+  var tapTimer = null;
+
+  var easterQuotes = [
+    '"The body is your temple. Keep it pure and clean for the soul to reside in." — B.K.S. Iyengar',
+    '"Sound is the medicine of the future." — Edgar Cayce',
+    '"The quieter you become, the more you can hear." — Ram Dass',
+    '"Yoga is the journey of the self, through the self, to the self." — The Bhagavad Gita',
+    '"Healing is a matter of time, but it is sometimes also a matter of opportunity." — Hippocrates',
+    '"Where words fail, music speaks." — Hans Christian Andersen',
+    '"The wound is the place where the light enters you." — Rumi',
+    '"In the midst of movement and chaos, keep stillness inside of you." — Deepak Chopra',
+    '"Music gives a soul to the universe, wings to the mind, flight to the imagination." — Plato',
+    '"You should sit in meditation for twenty minutes every day — unless you\'re too busy. Then you should sit for an hour." — Zen Proverb'
+  ];
+
+  if (heroLogo && easterEgg) {
+    heroLogo.style.cursor = 'pointer';
+    heroLogo.addEventListener('click', function(e) {
+      e.preventDefault();
+      tapCount++;
+      if (tapTimer) clearTimeout(tapTimer);
+      tapTimer = setTimeout(function() { tapCount = 0; }, 600);
+
+      if (tapCount >= 3) {
+        tapCount = 0;
+        /* Show random quote */
+        easterQuote.textContent = easterQuotes[Math.floor(Math.random() * easterQuotes.length)];
+        easterEgg.classList.add('active');
+
+        /* Explode tubes — dispatch custom event */
+        window.dispatchEvent(new CustomEvent('easter-egg-activate'));
+
+        /* Close on tap */
+        easterEgg.addEventListener('click', function close() {
+          easterEgg.classList.remove('active');
+          window.dispatchEvent(new CustomEvent('easter-egg-deactivate'));
+          easterEgg.removeEventListener('click', close);
+        });
+      }
+    });
+  }
+
   /* --- About logo parallax --- */
   const aboutLogo = document.querySelector('.about-bg-logo');
   if (aboutLogo) {
