@@ -906,6 +906,7 @@ p { margin-bottom: 16px; text-wrap: pretty; }
     width: 70%;
     max-width: 300px;
     height: 100vh;
+    z-index: 99999;
     background: linear-gradient(135deg, rgba(123, 63, 160, 0.97), rgba(217, 70, 168, 0.97));
     backdrop-filter: blur(12px);
     flex-direction: column;
