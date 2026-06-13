@@ -118,28 +118,35 @@ document.addEventListener('DOMContentLoaded', () => {
 
   if (heroLogo && easterEgg) {
     heroLogo.style.cursor = 'pointer';
-    heroLogo.addEventListener('click', function(e) {
+
+    function handleTap(e) {
       e.preventDefault();
+      e.stopPropagation();
       tapCount++;
       if (tapTimer) clearTimeout(tapTimer);
-      tapTimer = setTimeout(function() { tapCount = 0; }, 600);
+      tapTimer = setTimeout(function() { tapCount = 0; }, 800);
 
       if (tapCount >= 3) {
         tapCount = 0;
-        /* Show random quote */
         easterQuote.textContent = easterQuotes[Math.floor(Math.random() * easterQuotes.length)];
         easterEgg.classList.add('active');
-
-        /* Explode tubes — dispatch custom event */
         window.dispatchEvent(new CustomEvent('easter-egg-activate'));
-
-        /* Close on tap */
-        easterEgg.addEventListener('click', function close() {
-          easterEgg.classList.remove('active');
-          window.dispatchEvent(new CustomEvent('easter-egg-deactivate'));
-          easterEgg.removeEventListener('click', close);
-        });
       }
+    }
+
+    heroLogo.addEventListener('click', handleTap);
+    heroLogo.addEventListener('touchend', function(e) {
+      e.preventDefault();
+      handleTap(e);
+    });
+
+    easterEgg.addEventListener('click', function() {
+      easterEgg.classList.remove('active');
+      window.dispatchEvent(new CustomEvent('easter-egg-deactivate'));
+    });
+    easterEgg.addEventListener('touchend', function() {
+      easterEgg.classList.remove('active');
+      window.dispatchEvent(new CustomEvent('easter-egg-deactivate'));
     });
   }
 

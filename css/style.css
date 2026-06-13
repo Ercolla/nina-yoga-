@@ -239,6 +239,9 @@ p { margin-bottom: 16px; text-wrap: pretty; }
   margin: 0 0 24px;
   outline: none;
   filter: drop-shadow(0 4px 20px rgba(0, 0, 0, 0.15));
+  position: relative;
+  z-index: 9991;
+  cursor: pointer;
 }
 
 @media (max-width: 768px) {
