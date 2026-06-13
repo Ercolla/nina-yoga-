@@ -129,42 +129,56 @@ document.addEventListener('DOMContentLoaded', () => {
     window.dispatchEvent(new CustomEvent('easter-egg-deactivate'));
   }
 
-  /* Long press on hero (3 seconds) to activate */
-  var heroSection = document.getElementById('hero');
-  var pressTimer = null;
+  /* Blow into microphone to activate */
+  var micStarted = false;
 
-  if (heroSection) {
-    heroSection.addEventListener('touchstart', function(e) {
-      if (easterActive) return;
-      pressTimer = setTimeout(function() {
-        activateEasterEgg();
-      }, 3000);
-    }, { passive: true });
+  function startMicDetection() {
+    if (micStarted) return;
+    micStarted = true;
 
-    heroSection.addEventListener('touchend', function() {
-      if (pressTimer) { clearTimeout(pressTimer); pressTimer = null; }
-    });
+    navigator.mediaDevices.getUserMedia({ audio: true }).then(function(stream) {
+      var audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      var source = audioCtx.createMediaStreamSource(stream);
+      var analyser = audioCtx.createAnalyser();
+      analyser.fftSize = 256;
+      source.connect(analyser);
 
-    heroSection.addEventListener('touchmove', function() {
-      if (pressTimer) { clearTimeout(pressTimer); pressTimer = null; }
-    });
+      var data = new Uint8Array(analyser.frequencyBinCount);
+      var blowStart = 0;
 
-    /* Desktop: mouse long press */
-    heroSection.addEventListener('mousedown', function() {
-      if (easterActive) return;
-      pressTimer = setTimeout(function() {
-        activateEasterEgg();
-      }, 3000);
-    });
+      function checkBlow() {
+        if (easterActive) { requestAnimationFrame(checkBlow); return; }
+        analyser.getByteFrequencyData(data);
 
-    heroSection.addEventListener('mouseup', function() {
-      if (pressTimer) { clearTimeout(pressTimer); pressTimer = null; }
-    });
+        /* Average volume of low frequencies (typical of blowing) */
+        var sum = 0;
+        for (var i = 0; i < 20; i++) sum += data[i];
+        var avg = sum / 20;
 
-    heroSection.addEventListener('mouseleave', function() {
-      if (pressTimer) { clearTimeout(pressTimer); pressTimer = null; }
-    });
+        if (avg > 120) {
+          if (!blowStart) blowStart = Date.now();
+          if (Date.now() - blowStart > 1200) {
+            blowStart = 0;
+            activateEasterEgg();
+          }
+        } else {
+          blowStart = 0;
+        }
+        requestAnimationFrame(checkBlow);
+      }
+      requestAnimationFrame(checkBlow);
+    }).catch(function() {});
   }
+
+  /* Start mic on first user interaction */
+  document.addEventListener('touchstart', function initMic() {
+    startMicDetection();
+    document.removeEventListener('touchstart', initMic);
+  }, { once: true });
+  document.addEventListener('click', function initMic() {
+    startMicDetection();
+    document.removeEventListener('click', initMic);
+  }, { once: true });
 
   /* Close Easter egg on tap */
   if (easterEgg) {
