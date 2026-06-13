@@ -81,37 +81,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }, { passive: true });
   }
 
-  /* --- Tubes Interactive Background --- */
-  var tubesCanvas = document.getElementById('tubes-canvas');
-  if (tubesCanvas) {
-    (async function() {
-      try {
-        var module = await import('https://cdn.jsdelivr.net/npm/threejs-components@0.0.19/build/cursors/tubes1.min.js');
-        var TubesCursor = module.default;
-        var app = TubesCursor(tubesCanvas, {
-          tubes: {
-            colors: ['#7B3FA0', '#9B5FBB', '#D946A8'],
-            lights: {
-              intensity: 200,
-              colors: ['#7B3FA0', '#D946A8', '#E06BB8', '#9B5FBB']
-            }
-          }
-        });
-
-        /* Forward mouse events to canvas so tubes follow cursor */
-        document.addEventListener('mousemove', function(e) {
-          tubesCanvas.dispatchEvent(new MouseEvent('mousemove', {
-            clientX: e.clientX,
-            clientY: e.clientY,
-            bubbles: true
-          }));
-        }, { passive: true });
-      } catch(e) {
-        console.warn('Tubes background not available:', e);
-      }
-    })();
-  }
-
   /* --- Back to Top button --- */
   var backToTop = document.getElementById('back-to-top');
   if (backToTop) {
