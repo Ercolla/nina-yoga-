@@ -799,8 +799,43 @@ p { margin-bottom: 16px; text-wrap: pretty; }
 }
 
 .contact-inner {
-  max-width: 600px;
+  max-width: 900px;
   margin: 0 auto;
+}
+
+.contact-columns {
+  display: flex;
+  align-items: center;
+  gap: 48px;
+}
+
+.contact-left {
+  flex: 1;
+  text-align: center;
+}
+
+.contact-right {
+  flex: 0 0 280px;
+}
+
+.contact-right img {
+  width: 100%;
+  border-radius: 18px;
+  object-fit: cover;
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+@media (max-width: 768px) {
+  .contact-columns {
+    flex-direction: column;
+    gap: 32px;
+  }
+  .contact-right {
+    flex: none;
+    width: 220px;
+  }
 }
 
 .contact-methods {
