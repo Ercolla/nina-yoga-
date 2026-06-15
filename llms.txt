@@ -1,0 +1,19 @@
+# Nina Therapy
+
+> Essential information about Nina Therapy, clinical services, and contact details.
+
+## Overview
+
+Nina is a certified and accredited music therapist, sound healer, mindfulness and hatha yoga teacher, and gym instructor based in London (UK). Her practice blends ancient healing traditions with modern wellness approaches, creating a unique space for personal transformation through the power of voices, mantras and sounds. Sessions are open to everyone — all ages, backgrounds and experience levels. No prior experience is needed. Donations are welcome.
+
+## Main sections
+
+- [Home](https://ninatherapy.vercel.app/): Main landing page with the therapeutic approach, services overview, gallery, benefits, FAQ and class schedule.
+- [About](https://ninatherapy.vercel.app/#about): Professional background, philosophy, and qualifications — certified music therapist, sound healer, hatha yoga teacher and gym instructor active in London, Italy and Canary Islands.
+- [Services](https://ninatherapy.vercel.app/#services): Detailed overview of five therapy modalities — Music Therapy, Sound Therapy, Hatha Yoga & Mindfulness, Pet Therapy, and Aromatherapy.
+- [Contact](https://ninatherapy.vercel.app/#contact): Booking information and direct email contact (Nicogori15@yahoo.com).
+
+## Technical metadata
+
+- **Type:** Clean HTML/CSS/JS static site (no heavy CMS)
+- **Sitemap:** https://ninatherapy.vercel.app/sitemap.xml
