@@ -1,4 +1,4 @@
-const CACHE_NAME = 'nina-therapy-v2';
+const CACHE_NAME = 'nina-therapy-v3';
 const ASSETS = [
   '/',
   '/index.html',
@@ -32,8 +32,14 @@ self.addEventListener('activate', function(e) {
 
 self.addEventListener('fetch', function(e) {
   e.respondWith(
-    caches.match(e.request).then(function(cached) {
-      return cached || fetch(e.request);
+    fetch(e.request).then(function(response) {
+      var clone = response.clone();
+      caches.open(CACHE_NAME).then(function(cache) {
+        cache.put(e.request, clone);
+      });
+      return response;
+    }).catch(function() {
+      return caches.match(e.request);
     })
   );
 });
